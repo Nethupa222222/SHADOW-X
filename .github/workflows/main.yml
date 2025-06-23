@@ -1,34 +1,34 @@
-name: WhatsApp Bot CI
+name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build-and-test:
+  build:
+
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [20.x]
+
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: ⚙️ Set up Node.js
-      uses: actions/setup-node@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: ${{ matrix.node-version }}
 
-    - name: 📦 Install dependencies
+    - name: Install dependencies
       run: npm install
 
-    - name: 🔍 Lint code (optional)
-      run: npm run lint
-      continue-on-error: true
-
-    - name: 🧪 Run tests (optional)
-      run: npm test
-      continue-on-error: true
-
-    - name: ✅ Check bot entry point
-      run: node . || echo "Bot exited (expected in CI)"
+    - name: Start application
+      run: npm start
+      
